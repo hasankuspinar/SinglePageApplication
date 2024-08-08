@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPAproj.Server", "SPAproj.S
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "spaproj.client", "spaproj.client\spaproj.client.esproj", "{E5819218-ADF9-442C-A1AE-732811D9C7FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPAtest1", "..\SPAtest1\SPAtest1\SPAtest1.csproj", "{024095A1-4888-449D-8F33-2BF4A73BF298}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +23,6 @@ Global
 		{E5819218-ADF9-442C-A1AE-732811D9C7FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5819218-ADF9-442C-A1AE-732811D9C7FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E5819218-ADF9-442C-A1AE-732811D9C7FA}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{024095A1-4888-449D-8F33-2BF4A73BF298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{024095A1-4888-449D-8F33-2BF4A73BF298}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{024095A1-4888-449D-8F33-2BF4A73BF298}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{024095A1-4888-449D-8F33-2BF4A73BF298}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
