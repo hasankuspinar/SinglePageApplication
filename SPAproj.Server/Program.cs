@@ -11,7 +11,7 @@ namespace SPAproj.Server
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<PersonContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext") ?? throw new InvalidOperationException("Connection string 'PersonContext' not found.")));
-
+           
             // Add services to the container.
             builder.Services.AddCors(options =>
             {
