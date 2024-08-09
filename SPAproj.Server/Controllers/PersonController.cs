@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SPAproj.Server;
 using SPAproj.Server.Data;
+using SPAproj.Server.Models;
 
 namespace SPAproj.Server.Controllers
 {

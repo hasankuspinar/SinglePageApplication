@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPAproj.Server;
+using SPAproj.Server.Models;
 
 namespace SPAproj.Server.Data
 {
@@ -13,6 +14,6 @@ namespace SPAproj.Server.Data
             : base(options)
         {
         }
-        public DbSet<SPAproj.Server.Person> Person { get; set; } = default!;
+        public DbSet<Person> Person { get; set; } = default!;
     }
 }
