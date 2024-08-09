@@ -10,17 +10,11 @@ namespace SPAproj.Server.Data;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserPassword> UserPasswords { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
-    public DbSet<UserStatus> UserStatuses { get; set; }
+    public DbSet<User> User { get; set; }
+    public DbSet<UserPassword> UserPassword { get; set; }
+    public DbSet<UserRole> UserRole { get; set; }
+    public DbSet<UserStatus> UserStatus { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseInMemoryDatabase("TestDatabase");
-        }
-    }
+    
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SPAproj.Server.Data;
+using SPAproj.Server.Repo;
+using System.Configuration;
 
 namespace SPAproj.Server
 {
@@ -11,7 +13,9 @@ namespace SPAproj.Server
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<PersonContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext") ?? throw new InvalidOperationException("Connection string 'PersonContext' not found.")));
-           
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext")));
+
             // Add services to the container.
             builder.Services.AddCors(options =>
             {
@@ -23,6 +27,9 @@ namespace SPAproj.Server
                                .AllowAnyMethod();
                     });
             });
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<UserManager>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

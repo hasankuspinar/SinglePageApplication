@@ -19,20 +19,20 @@ namespace SPAproj.Server.Repo;
 
         public async Task<User> GetUserByUsername(string username)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            return await _context.User.SingleOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<UserPassword> GetUserPassword(int userId)
         {
-            return await _context.UserPasswords.SingleOrDefaultAsync(up => up.UserId == userId);
+            return await _context.UserPassword.SingleOrDefaultAsync(up => up.UserId == userId);
         }
 
         public async Task AddUser(User user, UserPassword userPassword, UserRole userRole, UserStatus userStatus)
         {
-            await _context.Users.AddAsync(user);
-            await _context.UserPasswords.AddAsync(userPassword);
-            await _context.UserRoles.AddAsync(userRole);
-            await _context.UserStatuses.AddAsync(userStatus);
+            await _context.User.AddAsync(user);
+            await _context.UserPassword.AddAsync(userPassword);
+            await _context.UserRole.AddAsync(userRole);
+            await _context.UserStatus.AddAsync(userStatus);
             await _context.SaveChangesAsync();
         }
     }
