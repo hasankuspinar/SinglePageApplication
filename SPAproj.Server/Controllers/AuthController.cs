@@ -44,7 +44,7 @@ namespace SPAproj.Server.Controllers
                 return Unauthorized("Invalid username or password.");
             }
 
-            // Generate token or handle post-login logic here
+            
             return Ok(new { message = "Login successful" });
         }
     }

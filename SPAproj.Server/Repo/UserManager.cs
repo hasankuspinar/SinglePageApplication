@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SPAproj.Server.Models;
+using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace SPAproj.Server.Repo;
 
 public class UserManager
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
     public UserManager(IUserRepository userRepository)
     {
@@ -23,7 +26,9 @@ public class UserManager
             return false;
 
         var newUser = new User { Username = username };
-        var newUserPassword = new UserPassword { Password = password };
+        var combinedPassword = $"{username}{password}";
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(combinedPassword);
+        var newUserPassword = new UserPassword { Password = hashedPassword };
         var newUserRole = new UserRole { Role = role };
         var newUserStatus = new UserStatus { Status = status };
 
@@ -36,9 +41,9 @@ public class UserManager
         var user = await _userRepository.GetUserByUsername(username);
         if (user == null)
             return false;
-
+        var combinedPassword = $"{username}{password}";
         var userPassword = await _userRepository.GetUserPassword(user.UserId);
-        if (userPassword == null || userPassword.Password != password)
+        if (!BCrypt.Net.BCrypt.Verify(combinedPassword,userPassword.Password))
             return false;
 
         return true;
