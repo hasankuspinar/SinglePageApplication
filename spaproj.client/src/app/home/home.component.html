@@ -1,25 +1,8 @@
-<h1 id="tableLabel">Person List</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-<p *ngIf="!people"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
+<p>Welcome to the home page of the Single Page Application!</p>
 
-<table *ngIf="people">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Surname</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let person of people">
-      <td>{{ person.name }}</td>
-      <td>{{ person.surname }}</td>
-    </tr>
-  </tbody>
-</table>
+<p>For login, click this button => <button routerLink="/login">Login</button></p>
 
-<div>
-  <button routerLink="/login">Login</button>
-  <button routerLink="/register">Register</button>
-</div>
+<p>For register, click this button => <button routerLink="/register">Register</button></p>
+
