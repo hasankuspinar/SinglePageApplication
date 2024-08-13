@@ -11,5 +11,8 @@ public interface IUserRepository
 {
     Task<User> GetUserByUsername(string username);
     Task<UserPassword> GetUserPassword(int userId);
-    Task AddUser(User user, UserPassword userPassword, UserRole userRole, UserStatus userStatus);
+    Task AddUser(User user);
+    Task AddUserPassword(UserPassword userPassword);
+    Task AddUserRole(UserRole userRole);
+    Task AddUserStatus(UserStatus userStatus);
 }

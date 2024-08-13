@@ -26,15 +26,31 @@ namespace SPAproj.Server.Repo;
         {
             return await _context.UserPassword.SingleOrDefaultAsync(up => up.UserId == userId);
         }
-
-        public async Task AddUser(User user, UserPassword userPassword, UserRole userRole, UserStatus userStatus)
+        public async Task AddUser(User user)
         {
             await _context.User.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUserPassword(UserPassword userPassword)
+        {
             await _context.UserPassword.AddAsync(userPassword);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUserRole(UserRole userRole)
+        {
             await _context.UserRole.AddAsync(userRole);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUserStatus(UserStatus userStatus)
+        {
             await _context.UserStatus.AddAsync(userStatus);
             await _context.SaveChangesAsync();
         }
+
+        
     }
 
 

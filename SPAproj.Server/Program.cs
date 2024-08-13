@@ -32,7 +32,6 @@ namespace SPAproj.Server
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserManager>();
-            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

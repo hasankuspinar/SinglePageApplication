@@ -6,34 +6,57 @@ using System.Threading.Tasks;
 using SPAproj.Server.Models;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using SPAproj.Server.Data;
 
 namespace SPAproj.Server.Repo;
 
 public class UserManager
 {
     private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher<User> _passwordHasher;
-
-    public UserManager(IUserRepository userRepository)
+    private readonly AppDbContext _context;
+    public UserManager(IUserRepository userRepository, AppDbContext context)
     {
         _userRepository = userRepository;
+        _context = context;
     }
 
     public async Task<bool> Register(string username, string password, string role, int status)
     {
-        var existingUser = await _userRepository.GetUserByUsername(username);
-        if (existingUser != null)
-            return false;
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                var existingUser = await _userRepository.GetUserByUsername(username);
+                if (existingUser != null)
+                    return false;
 
-        var newUser = new User { Username = username };
-        var combinedPassword = $"{username}{password}";
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(combinedPassword);
-        var newUserPassword = new UserPassword { Password = hashedPassword };
-        var newUserRole = new UserRole { Role = role };
-        var newUserStatus = new UserStatus { Status = status };
+                var newUser = new User { Username = username };
+                await _userRepository.AddUser(newUser);
 
-        await _userRepository.AddUser(newUser, newUserPassword, newUserRole, newUserStatus);
-        return true;
+                var user = await _userRepository.GetUserByUsername(username);
+                var combinedPassword = $"{user.UserId}{username}{password}";
+                var hashedPassword = ComputeSha512Hash(combinedPassword);
+                var newUserPassword = new UserPassword { UserId = user.UserId, Password = hashedPassword };
+                await _userRepository.AddUserPassword(newUserPassword);
+
+                var newUserRole = new UserRole { UserId = user.UserId, Role = role };
+                await _userRepository.AddUserRole(newUserRole);
+
+                var newUserStatus = new UserStatus { UserId = user.UserId, Status = status };
+                await _userRepository.AddUserStatus(newUserStatus);
+
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 
     public async Task<bool> Login(string username, string password)
@@ -41,11 +64,25 @@ public class UserManager
         var user = await _userRepository.GetUserByUsername(username);
         if (user == null)
             return false;
-        var combinedPassword = $"{username}{password}";
+
+        var combinedPassword = $"{user.UserId}{username}{password}";
         var userPassword = await _userRepository.GetUserPassword(user.UserId);
-        if (!BCrypt.Net.BCrypt.Verify(combinedPassword,userPassword.Password))
+        var hashedPassword = ComputeSha512Hash(combinedPassword);
+
+        if ((userPassword.Password) != hashedPassword)
             return false;
 
         return true;
     }
+    private string ComputeSha512Hash(string input)
+    {
+        using (var sha512 = SHA512.Create())
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha512.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+    }
+
+
 }
