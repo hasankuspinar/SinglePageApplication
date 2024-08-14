@@ -5,6 +5,7 @@ using SPAproj.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SPAproj.Server.Controllers
 {
@@ -50,7 +51,7 @@ namespace SPAproj.Server.Controllers
             
             return Ok(new { message = "Login successful" });
         }
-
+        [Authorize]
         [HttpGet("userInfo")]
         public IActionResult GetUserInfo()
         {
@@ -90,7 +91,7 @@ namespace SPAproj.Server.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

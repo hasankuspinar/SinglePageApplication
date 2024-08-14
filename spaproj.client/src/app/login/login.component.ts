@@ -32,20 +32,6 @@ export class LoginComponent {
       }
     });
   }
-  onLogout(): void {
-    this.httpClient.post('https://localhost:7233/api/Auth/logout', {}, { withCredentials: true })
-      .subscribe({
-        next: () => {
-          console.log('Logout successful');
-          this.loginMessage = 'Logout successful!';
-          //this.router.navigate(['/']);
-        },
-        error: (error) => {
-          console.error('Logout failed', error);
-          this.loginMessage = 'Logout failed. Please try again.';
-        }
-      });
-  }
 }
 
 
