@@ -37,7 +37,7 @@ namespace SPAproj.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var success = await _userManager.Login(loginDto.Username, loginDto.Password);
+            var success = await _userManager.Login(loginDto.Username, loginDto.Password,HttpContext);
 
             if (!success)
             {
