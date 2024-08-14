@@ -11,7 +11,11 @@
     </div>
     <button type="submit" class="form-button">Login</button>
   </form>
+  <div *ngIf="loginMessage" class="message">
+    {{ loginMessage }}
+  </div>
   <a class="back-link" routerLink="/">Back to Home</a>
+  <a class="logout-link" (click)="onLogout()">Logout</a>
 </div>
 
 

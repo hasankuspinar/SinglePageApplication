@@ -1,0 +1,11 @@
+logout-link {
+  display: inline-block; /* Adds space between the Back to Home and Logout links */
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.logout-link:hover {
+  color: #0056b3;
+}

@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SPAproj.Server.Repo;
 using SPAproj.Server.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace SPAproj.Server.Controllers
 {
@@ -47,5 +50,53 @@ namespace SPAproj.Server.Controllers
             
             return Ok(new { message = "Login successful" });
         }
+
+        [HttpGet("userInfo")]
+        public IActionResult GetUserInfo()
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var username = HttpContext.User.Identity.Name;
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("User ID not found.");
+            }
+
+            var userInfo = new
+            {
+                Username = username,
+                UserId = userIdClaim.Value
+            };
+
+            return Ok(userInfo);
+        }
+
+        [HttpGet("isLoggedIn")]
+        public IActionResult IsLoggedIn()
+        {
+            var isLoggedIn = _userManager.IsUserLoggedIn(HttpContext);
+
+            if (!isLoggedIn)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            return Ok(new { message = "User is logged in" });
+        }
+
+
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok(new { message = "Logout successful" });
+        }
+
     }
 }

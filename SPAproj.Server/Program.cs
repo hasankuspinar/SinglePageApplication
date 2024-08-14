@@ -23,11 +23,12 @@ namespace SPAproj.Server
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder =>
+                    policyBuilder =>
                     {
-                        builder.WithOrigins("https://localhost:4200")
+                        policyBuilder.WithOrigins("https://localhost:4200")
                                .AllowAnyHeader()
-                               .AllowAnyMethod();
+                               .AllowAnyMethod()
+                               .AllowCredentials();
                     });
             });
 
@@ -43,9 +44,11 @@ namespace SPAproj.Server
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
+                options.Cookie.Name = "auth";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                options.SlidingExpiration = true;
-                options.AccessDeniedPath = "/Forbidden/";
+                options.LoginPath = "/api/auth/login";
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             var app = builder.Build();

@@ -88,11 +88,11 @@ public class UserManager
 
         
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
         
-    };
+        };
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var authProperties = new AuthenticationProperties
@@ -106,6 +106,11 @@ public class UserManager
 
         return true;
     }
+    public bool IsUserLoggedIn(HttpContext httpContext)
+    {
+        return httpContext.User.Identity.IsAuthenticated;
+    }
+
     private string ComputeSha512Hash(string input)
     {
         using (var sha512 = SHA512.Create())
