@@ -47,8 +47,13 @@ namespace SPAproj.Server
                 options.Cookie.Name = "auth";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.LoginPath = "/api/auth/login";
-                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
             });
 
             var app = builder.Build();
@@ -71,7 +76,8 @@ namespace SPAproj.Server
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/auth/getData"),
+                appBuilder => appBuilder.UseMiddleware<AdminRoleMiddleware>());
 
             app.MapControllers();
 
@@ -81,3 +87,4 @@ namespace SPAproj.Server
         }
     }
 }
+

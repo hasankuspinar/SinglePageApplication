@@ -65,16 +65,6 @@ public class UserManager
 
     public async Task<bool> Login(string username, string password, HttpContext httpContext)
     {
-        /*var user = await _userRepository.GetUserByUsername(username);
-        if (user == null)
-            return false;
-
-        var combinedPassword = $"{user.UserId}{username}{password}";
-        var userPassword = await _userRepository.GetUserPassword(user.UserId);
-        var hashedPassword = ComputeSha512Hash(combinedPassword);
-
-        if ((userPassword.Password) != hashedPassword)
-            return false;*/
         var user = await _userRepository.GetUserByUsername(username);
         if (user == null)
             return false;
@@ -86,12 +76,13 @@ public class UserManager
         if (userPassword.Password != hashedPassword)
             return false;
 
-        
+        var role = await _userRepository.GetUserRole(user.UserId);
+
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-        
+            new Claim(ClaimTypes.Role, role.Role)
         };
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

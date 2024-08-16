@@ -62,6 +62,7 @@ namespace SPAproj.Server.Controllers
 
             var username = HttpContext.User.Identity.Name;
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
 
             if (userIdClaim == null)
             {
@@ -71,7 +72,8 @@ namespace SPAproj.Server.Controllers
             var userInfo = new
             {
                 Username = username,
-                UserId = userIdClaim.Value
+                UserId = userIdClaim.Value,
+                Role = roleClaim.Value
             };
 
             return Ok(userInfo);
@@ -97,6 +99,14 @@ namespace SPAproj.Server.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok(new { message = "Logout successful" });
+        }
+
+        
+        [HttpGet("getData")]
+        public IActionResult GetData()
+        {
+            
+            return Ok("This is data only for admins!");
         }
 
     }
