@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,15 +12,11 @@ export class LoginComponent {
   password: string = '';
   loginMessage: string = '';
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   onLogin(): void {
-    const loginData = {
-      username: this.username,
-      password: this.password
-    };
 
-    this.httpClient.post('https://localhost:7233/api/Auth/login', loginData, { withCredentials: true }).subscribe({
+    this.authService.login(this.username, this.password).subscribe({
       next: (response) => {
         console.log('Login successful', response);
         this.loginMessage = 'Login successful!';

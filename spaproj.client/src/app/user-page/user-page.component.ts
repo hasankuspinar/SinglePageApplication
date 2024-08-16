@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class UserPageComponent implements OnInit {
   username: string = '';
+  isAdmin: boolean = false;
 
   constructor(private httpClient: HttpClient,private router: Router) { }
 
@@ -17,10 +18,11 @@ export class UserPageComponent implements OnInit {
   }
 
   getUserInfo(): void {
-    this.httpClient.get<{ username: string }>('https://localhost:7233/api/Auth/userInfo', { withCredentials: true })
+    this.httpClient.get < { username: string,role: string }>('https://localhost:7233/api/Auth/userInfo', { withCredentials: true })
       .subscribe({
         next: (response) => {
           this.username = response.username;
+          this.isAdmin = response.role === 'admin';
         },
         error: (error) => {
           console.error('Failed to fetch user info', error);
@@ -39,5 +41,14 @@ export class UserPageComponent implements OnInit {
         }
       });
   }
+  onNavigateToAdmin(): void {
+    if (this.isAdmin) {
+      this.router.navigate(['/admin']);
+    }
+    else {
+      console.log("Navigation blocked: User is not admin");
+    }
+  }
+
 }
 

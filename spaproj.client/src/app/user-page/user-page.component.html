@@ -1,5 +1,7 @@
 <div class="user-page">
   <h2>Hello, {{ username }}!</h2>
   <a class="logout-link" (click)="onLogout()">Logout</a>
+  <a *ngIf="isAdmin" class="admin-link" (click)="onNavigateToAdmin()">Go to Admin Page</a>
 </div>
+
 
