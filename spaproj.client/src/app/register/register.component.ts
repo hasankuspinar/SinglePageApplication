@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,16 +12,11 @@ export class RegisterComponent {
   password: string = '';
   role: string = '';
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   onRegister(): void {
-    const registerData = {
-      username: this.username,
-      password: this.password,
-      role: this.role
-    };
 
-    this.httpClient.post('https://localhost:7233/api/Auth/register', registerData).subscribe({
+    this.authService.register(this.username, this.password, this.role).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
         this.router.navigate(['/login']); 

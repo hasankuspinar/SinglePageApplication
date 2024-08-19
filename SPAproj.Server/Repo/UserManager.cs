@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using SPAproj.Server.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace SPAproj.Server.Repo;
 
@@ -59,7 +63,7 @@ public class UserManager
         }
     }
 
-    public async Task<bool> Login(string username, string password)
+    public async Task<bool> Login(string username, string password, HttpContext httpContext)
     {
         var user = await _userRepository.GetUserByUsername(username);
         if (user == null)
@@ -69,11 +73,35 @@ public class UserManager
         var userPassword = await _userRepository.GetUserPassword(user.UserId);
         var hashedPassword = ComputeSha512Hash(combinedPassword);
 
-        if ((userPassword.Password) != hashedPassword)
+        if (userPassword.Password != hashedPassword)
             return false;
+
+        var role = await _userRepository.GetUserRole(user.UserId);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Role, role.Role)
+        };
+
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(20)
+        };
+
+        await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
 
         return true;
     }
+    public bool IsUserLoggedIn(HttpContext httpContext)
+    {
+        return httpContext.User.Identity.IsAuthenticated;
+    }
+
     private string ComputeSha512Hash(string input)
     {
         using (var sha512 = SHA512.Create())

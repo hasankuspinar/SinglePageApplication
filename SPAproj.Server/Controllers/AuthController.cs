@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SPAproj.Server.Repo;
 using SPAproj.Server.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SPAproj.Server.Controllers
 {
@@ -37,7 +41,7 @@ namespace SPAproj.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var success = await _userManager.Login(loginDto.Username, loginDto.Password);
+            var success = await _userManager.Login(loginDto.Username, loginDto.Password,HttpContext);
 
             if (!success)
             {
@@ -47,5 +51,63 @@ namespace SPAproj.Server.Controllers
             
             return Ok(new { message = "Login successful" });
         }
+        [Authorize]
+        [HttpGet("userInfo")]
+        public IActionResult GetUserInfo()
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var username = HttpContext.User.Identity.Name;
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("User ID not found.");
+            }
+
+            var userInfo = new
+            {
+                Username = username,
+                UserId = userIdClaim.Value,
+                Role = roleClaim.Value
+            };
+
+            return Ok(userInfo);
+        }
+
+        [HttpGet("isLoggedIn")]
+        public IActionResult IsLoggedIn()
+        {
+            var isLoggedIn = _userManager.IsUserLoggedIn(HttpContext);
+
+            if (!isLoggedIn)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            return Ok(new { message = "User is logged in" });
+        }
+
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok(new { message = "Logout successful" });
+        }
+
+        
+        [HttpGet("getData")]
+        public IActionResult GetData()
+        {
+            
+            return Ok("This is data only for admins!");
+        }
+
     }
 }

@@ -1,0 +1,14 @@
+.user-page a.logout-link,
+.user-page a.admin-link {
+  display: inline-block;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+  margin-right: 15px; 
+}
+
+  .user-page a.logout-link:hover,
+  .user-page a.admin-link:hover {
+    color: #0056b3;
+  }

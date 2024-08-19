@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SPAproj.Server.Data;
@@ -22,11 +23,12 @@ namespace SPAproj.Server
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder =>
+                    policyBuilder =>
                     {
-                        builder.WithOrigins("https://localhost:4200")
+                        policyBuilder.WithOrigins("https://localhost:4200")
                                .AllowAnyHeader()
-                               .AllowAnyMethod();
+                               .AllowAnyMethod()
+                               .AllowCredentials();
                     });
             });
 
@@ -39,7 +41,20 @@ namespace SPAproj.Server
             builder.Services.AddDbContext<PersonContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.Cookie.Name = "auth";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.LoginPath = "/api/auth/login";
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
+            });
 
             var app = builder.Build();
 
@@ -59,8 +74,10 @@ namespace SPAproj.Server
 
             app.UseCors("AllowSpecificOrigin");
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/auth/getData"),
+                appBuilder => appBuilder.UseMiddleware<AdminRoleMiddleware>());
 
             app.MapControllers();
 
@@ -70,3 +87,4 @@ namespace SPAproj.Server
         }
     }
 }
+
