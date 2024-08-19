@@ -109,5 +109,24 @@ namespace SPAproj.Server.Controllers
             return Ok("This is data only for admins!");
         }
 
+        [HttpPut("update-status")]
+        public async Task<IActionResult> UpdateUserStatus([FromBody] UserStatusUpdateDto statusUpdate)
+        {
+            if (string.IsNullOrEmpty(statusUpdate.Username))
+            {
+                return BadRequest(new { message = "Username is required." });
+            }
+
+            bool updateResult = await _userManager.UpdateUserStatus(statusUpdate.Username, statusUpdate.NewStatus);
+            if (updateResult)
+            {
+                return Ok(new { message = $"User status for {statusUpdate.Username} updated successfully to {statusUpdate.NewStatus}." });
+            }
+            else
+            {
+                return NotFound(new { message = $"Failed to update status for {statusUpdate.Username}. User not found or status record missing." });
+            }
+        }
+
     }
 }

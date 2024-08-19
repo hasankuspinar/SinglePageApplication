@@ -10,8 +10,10 @@ export class AuthService {
   private registerUrl = 'https://localhost:7233/api/Auth/register';
   private loginUrl = 'https://localhost:7233/api/Auth/login';
   private authStatusUrl = 'https://localhost:7233/api/Auth/isLoggedIn';
-  private authUserInfoUrl = 'https://localhost:7233/api/Auth/UserInfo';
+  private userInfoUrl = 'https://localhost:7233/api/Auth/UserInfo';
   private getDataUrl = 'https://localhost:7233/api/Auth/getData';
+  private logoutUrl = 'https://localhost:7233/api/Auth/logout';
+  private updateUserStatusUrl = 'https://localhost:7233/api/Auth/update-status';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -22,7 +24,7 @@ export class AuthService {
       );
   }
   getUserRole(): Observable<string> {
-    return this.httpClient.get<{ role: string }>(this.authUserInfoUrl, { withCredentials: true }).pipe(
+    return this.httpClient.get<{ role: string }>(this.userInfoUrl, { withCredentials: true }).pipe(
       map(response => response.role)
     );
   }
@@ -34,5 +36,15 @@ export class AuthService {
   login(username: string, password: string): Observable<any> {
     const loginData = { username, password };
     return this.httpClient.post(this.loginUrl, loginData, { withCredentials: true });
+  }
+  logout(): Observable<any> {
+    return this.httpClient.post(this.logoutUrl, {}, { withCredentials: true });
+  }
+  userInfo(): Observable<{ username: string, role: string }> {
+    return this.httpClient.get<{ username: string, role: string }>(this.userInfoUrl, { withCredentials: true });
+  }
+  updateUserStatus(username: string, status: number): Observable<any> {
+    const statusUpdate = { username, newStatus: status };
+    return this.httpClient.put(this.updateUserStatusUrl, statusUpdate, { withCredentials: true });
   }
 }

@@ -75,6 +75,7 @@ namespace SPAproj.Server
             app.UseCors("AllowSpecificOrigin");
 
             app.UseAuthentication();
+            app.UseMiddleware<UserStatusMiddleware>();
             app.UseAuthorization();
             app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/auth/getData"),
                 appBuilder => appBuilder.UseMiddleware<AdminRoleMiddleware>());

@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { ErrorComponent } from './error/error.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ErrorComponent } from './error/error.component';
     UserPageComponent,
     AdminPageComponent,
     ErrorComponent,
+    LogoutComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule, FormsModule,

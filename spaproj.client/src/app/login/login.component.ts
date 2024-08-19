@@ -23,8 +23,14 @@ export class LoginComponent {
         this.router.navigate(['/user']); 
       },
       error: (error) => {
-        console.error('Login failed', error);
-        this.loginMessage = 'Login failed. Please try again.';
+        /*console.error('Login failed', error);
+        this.loginMessage = 'Login failed. Please try again.';*/
+        if (error.status === 401) {
+          this.loginMessage = 'Access Denied. You are blocked.';
+          this.router.navigate(['/logout']);
+        } else {
+          this.loginMessage = 'Login failed. Please try again.';
+        }
       }
     });
   }

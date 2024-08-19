@@ -7,6 +7,7 @@ import { UserPageComponent } from './user-page/user-page.component';
 import { AuthGuard } from './auth.guard';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { ErrorComponent } from './error/error.component';
+import { LogoutComponent } from './logout/logout.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'user', component: UserPageComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminPageComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+  { path: 'logout', component: LogoutComponent },
   { path: 'error', component: ErrorComponent }
 ];
 
