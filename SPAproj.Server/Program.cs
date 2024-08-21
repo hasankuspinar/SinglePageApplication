@@ -20,17 +20,7 @@ namespace SPAproj.Server
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext")));
 
             // Add services to the container.
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigin",
-                    policyBuilder =>
-                    {
-                        policyBuilder.WithOrigins("https://localhost:4200")
-                               .AllowAnyHeader()
-                               .AllowAnyMethod()
-                               .AllowCredentials();
-                    });
-            });
+            
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserManager>();
@@ -77,8 +67,6 @@ namespace SPAproj.Server
             app.UseAuthentication();
             app.UseMiddleware<UserStatusMiddleware>();
             app.UseAuthorization();
-            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/auth/getData"),
-                appBuilder => appBuilder.UseMiddleware<AdminRoleMiddleware>());
 
             app.MapControllers();
 

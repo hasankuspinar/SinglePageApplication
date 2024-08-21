@@ -26,5 +26,17 @@ export class AdminPageComponent {
       }
     });
   }
+  onLogout(): void {
+    this.authService.logout()
+      .subscribe({
+        next: () => {
+          console.log('Logout successful');
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Logout failed', error);
+        }
+      });
+  }
 }
 

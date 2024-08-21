@@ -7,11 +7,13 @@ const PROXY_CONFIG = [
   {
     context: [
       "/weatherforecast",
-      "/api/Person"
+      "/api/Person",
+      "/api/auth"
     ],
     target,
     secure: false
   }
 ]
+console.log('Proxy configuration loaded:', PROXY_CONFIG);
 
 module.exports = PROXY_CONFIG;

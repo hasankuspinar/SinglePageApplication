@@ -11,7 +11,7 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Path.StartsWithSegments("/api/auth/logout"))
+            if (context.Request.Path.StartsWithSegments("/api/auth/logout"))//is authenticated
             {
                 await _next(context);
                 return;

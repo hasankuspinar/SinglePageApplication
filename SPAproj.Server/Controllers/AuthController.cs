@@ -93,7 +93,7 @@ namespace SPAproj.Server.Controllers
         }
 
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -109,6 +109,7 @@ namespace SPAproj.Server.Controllers
             return Ok("This is data only for admins!");
         }
 
+        [Authorize(Policy ="AdminOnly")]
         [HttpPut("update-status")]
         public async Task<IActionResult> UpdateUserStatus([FromBody] UserStatusUpdateDto statusUpdate)
         {
