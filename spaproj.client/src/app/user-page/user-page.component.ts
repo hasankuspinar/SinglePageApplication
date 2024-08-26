@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
-
+import { AuthService } from '../auth/auth.service';
+interface Account {
+  accountNumber: string;
+  balance: number;
+}
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
@@ -11,11 +14,13 @@ import { AuthService } from '../auth.service';
 export class UserPageComponent implements OnInit {
   username: string = '';
   isAdmin: boolean = false;
+  accounts: Account[] = [];
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.getUserInfo();
+    this.getAccounts();
   }
 
   getUserInfo(): void {
@@ -27,6 +32,17 @@ export class UserPageComponent implements OnInit {
         },
         error: (error) => {
           console.error('Failed to fetch user info', error);
+        }
+      });
+  }
+  getAccounts(): void {
+    this.authService.getAccounts() 
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+        },
+        error: (error) => {
+          console.error('Failed to fetch accounts', error);
         }
       });
   }

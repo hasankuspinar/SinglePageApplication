@@ -1,4 +1,12 @@
-﻿namespace SPAproj.Server.Repo
+﻿using Microsoft.AspNetCore.Authorization;
+
+public enum Status
+{
+    Blocked = 0,
+    Active = 1
+}
+
+namespace SPAproj.Server.Repo
 {
     public class UserStatusMiddleware
     {
@@ -11,7 +19,17 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Path.StartsWithSegments("/api/auth/logout"))//is authenticated
+            var endpoint = context.GetEndpoint();
+
+            if (endpoint != null)
+            {
+                if (endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
+                {
+                    await _next(context);
+                    return;
+                }
+            }
+            if (!context.User.Identity.IsAuthenticated)
             {
                 await _next(context);
                 return;
@@ -19,7 +37,7 @@
 
             var userStatusClaim = context.User.Claims.FirstOrDefault(c => c.Type == "UserStatus");
 
-            if (userStatusClaim != null && userStatusClaim.Value == "0") // 0 is blocked, 1 is ok
+            if (userStatusClaim != null && Enum.TryParse(userStatusClaim.Value, out Status status) && status == Status.Blocked) 
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync("Access denied - user is blocked.");

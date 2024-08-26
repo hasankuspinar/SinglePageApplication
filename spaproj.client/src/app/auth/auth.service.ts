@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpService } from './auth.httpservice';
-
+interface Account {
+  accountNumber: string;
+  balance: number;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -14,6 +17,7 @@ export class AuthService {
   private getDataUrl = '/auth/getData';
   private logoutUrl = '/auth/logout';
   private updateUserStatusUrl = '/auth/update-status';
+  private getAccountsUrl = '/auth/getaccounts';
 
   constructor(private httpService: HttpService) { }
 
@@ -52,6 +56,9 @@ export class AuthService {
   updateUserStatus(username: string, status: number): Observable<any> {
     const statusUpdate = { username, newStatus: status };
     return this.httpService.put(this.updateUserStatusUrl, statusUpdate, true);
+  }
+  getAccounts(): Observable<Account[]> {
+    return this.httpService.get<Account[]>(this.getAccountsUrl, true);
   }
 }
 

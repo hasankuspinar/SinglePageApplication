@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Response-request\SPAproj.AccountModels.csproj" />
     <ProjectReference Include="..\spaproj.client\spaproj.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

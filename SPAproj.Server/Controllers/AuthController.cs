@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using SPAproj.AccountModels;
+using System.Net.Http;
 
 namespace SPAproj.Server.Controllers
 {
@@ -14,10 +16,13 @@ namespace SPAproj.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager _userManager;
-
-        public AuthController(UserManager userManager)
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        public AuthController(UserManager userManager, HttpClient httpClient, IConfiguration configuration) 
         {
             _userManager = userManager;
+            _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -127,6 +132,17 @@ namespace SPAproj.Server.Controllers
             {
                 return NotFound(new { message = $"Failed to update status for {statusUpdate.Username}. User not found or status record missing." });
             }
+        }
+        [HttpGet("getaccounts")]
+        public async Task<ActionResult<List<Account>>> GetAccounts()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_configuration.GetValue<string>("Endpoints:AccountApi"));
+
+            response.EnsureSuccessStatusCode();
+
+            var accounts = await response.Content.ReadFromJsonAsync<List<Account>>();
+
+            return Ok(accounts);
         }
 
     }

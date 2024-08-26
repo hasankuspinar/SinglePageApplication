@@ -11,4 +11,7 @@
     <None Remove="src\login\**" />
     <TypeScriptConfiguration Remove="src\login\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\auth\" />
+  </ItemGroup>
 </Project>

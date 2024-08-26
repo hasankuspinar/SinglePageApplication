@@ -1,7 +1,31 @@
 <div class="user-page">
   <h2>Hello, {{ username }}!</h2>
+
+  <!-- Account List Grid View -->
+  <div *ngIf="accounts.length > 0" class="account-grid">
+    <h3>Your Accounts</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Account Number</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let account of accounts">
+          <td>{{ account.accountNumber }}</td>
+          <td>{{ account.balance | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="accounts.length === 0">
+    <p>No accounts available.</p>
+  </div>
   <a class="logout-link" (click)="onLogout()">Logout</a>
   <a *ngIf="isAdmin" class="admin-link" (click)="onNavigateToAdmin()">Go to Admin Page</a>
 </div>
+
 
 
