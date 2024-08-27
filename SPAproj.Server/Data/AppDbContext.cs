@@ -14,6 +14,8 @@ public class AppDbContext : DbContext
     public DbSet<UserPassword> UserPassword { get; set; }
     public DbSet<UserRole> UserRole { get; set; }
     public DbSet<UserStatus> UserStatus { get; set; }
+    public DbSet<ConfigurationParameters> ConfigurationParameters { get; set; }
+
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     

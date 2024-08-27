@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Response-request\SPAproj.AccountModels.csproj" />
+    <ProjectReference Include="..\SPAproj.Models\SPAproj.Models.csproj" />
   </ItemGroup>
 
 </Project>

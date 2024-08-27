@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SPAproj.AccountModels;
+using SPAproj.Models;
 
 namespace SPAproj.AccountService.Controllers
 {
@@ -8,8 +8,8 @@ namespace SPAproj.AccountService.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        [HttpGet("getaccounts")]
-        public ActionResult<List<Account>> GetAccounts()
+        [HttpGet("getall")]
+        public ActionResult<List<Account>> GetAll()
         {
             var accounts = new List<Account>
             {

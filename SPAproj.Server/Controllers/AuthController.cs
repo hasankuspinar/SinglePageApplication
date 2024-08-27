@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using SPAproj.AccountModels;
+using SPAproj.Models;
 using System.Net.Http;
 
 namespace SPAproj.Server.Controllers
@@ -17,12 +17,12 @@ namespace SPAproj.Server.Controllers
     {
         private readonly UserManager _userManager;
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-        public AuthController(UserManager userManager, HttpClient httpClient, IConfiguration configuration) 
+        private readonly ConfigurationService _configurationService;
+        public AuthController(UserManager userManager, HttpClient httpClient, ConfigurationService configurationService) 
         {
             _userManager = userManager;
             _httpClient = httpClient;
-            _configuration = configuration;
+            _configurationService = configurationService;
         }
 
         [HttpPost("register")]
@@ -136,7 +136,7 @@ namespace SPAproj.Server.Controllers
         [HttpGet("getaccounts")]
         public async Task<ActionResult<List<Account>>> GetAccounts()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_configuration.GetValue<string>("Endpoints:AccountApi"));
+            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("accountapi"));
 
             response.EnsureSuccessStatusCode();
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SPAproj.Server.Models;
 
 public enum Status
 {
@@ -21,29 +22,31 @@ namespace SPAproj.Server.Repo
         {
             var endpoint = context.GetEndpoint();
 
-            if (endpoint != null)
-            {
-                if (endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
-                {
-                    await _next(context);
-                    return;
-                }
-            }
-            if (!context.User.Identity.IsAuthenticated)
+            if (endpoint != null && endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
             {
                 await _next(context);
                 return;
             }
-
-            var userStatusClaim = context.User.Claims.FirstOrDefault(c => c.Type == "UserStatus");
-
-            if (userStatusClaim != null && Enum.TryParse(userStatusClaim.Value, out Status status) && status == Status.Blocked) 
+            else if (context.User.Identity.IsAuthenticated)
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Access denied - user is blocked.");
-                return;
-            }
+                var username = context.User.Identity.Name;
+                if (!string.IsNullOrEmpty(username))
+                {
+                    var userRepository = context.RequestServices.GetService<IUserRepository>();
+                    var user = await userRepository.GetUserByUsername(username);
+                    if (user != null)
+                    {
+                        var userStatus = await userRepository.GetUserStatus(user.UserId);
 
+                        if (userStatus != null && userStatus.Status == (int)Status.Blocked)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            await context.Response.WriteAsync("Access denied - user is blocked.");
+                            return;
+                        }
+                    }
+                }
+            }
             await _next(context);
         }
     }

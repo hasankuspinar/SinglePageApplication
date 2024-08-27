@@ -25,6 +25,7 @@ namespace SPAproj.Server
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserManager>();
             builder.Services.AddHttpClient();
+            builder.Services.AddSingleton<ConfigurationService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             var connectionString = builder.Configuration.GetConnectionString("PersonContext");
