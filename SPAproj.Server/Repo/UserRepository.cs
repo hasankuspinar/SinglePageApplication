@@ -30,6 +30,11 @@ public class UserRepository : IUserRepository
     {
         return await _context.UserRole.SingleOrDefaultAsync(ur => ur.UserId == userId); ; 
     }
+    public async Task<UserStatus> GetUserStatus(int userId)
+    {
+        return await _context.UserStatus.FirstOrDefaultAsync(us => us.UserId == userId);
+    }
+
     public async Task AddUser(User user)
     {
         await _context.User.AddAsync(user);

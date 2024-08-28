@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using SPAproj.Models;
+using System.Net.Http;
 
 namespace SPAproj.Server.Controllers
 {
@@ -14,10 +16,13 @@ namespace SPAproj.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager _userManager;
-
-        public AuthController(UserManager userManager)
+        private readonly HttpClient _httpClient;
+        private readonly ConfigurationService _configurationService;
+        public AuthController(UserManager userManager, HttpClient httpClient, ConfigurationService configurationService) 
         {
             _userManager = userManager;
+            _httpClient = httpClient;
+            _configurationService = configurationService;
         }
 
         [HttpPost("register")]
@@ -93,7 +98,7 @@ namespace SPAproj.Server.Controllers
         }
 
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -107,6 +112,37 @@ namespace SPAproj.Server.Controllers
         {
             
             return Ok("This is data only for admins!");
+        }
+
+        [Authorize(Policy ="AdminOnly")]
+        [HttpPut("update-status")]
+        public async Task<IActionResult> UpdateUserStatus([FromBody] UserStatusUpdateDto statusUpdate)
+        {
+            if (string.IsNullOrEmpty(statusUpdate.Username))
+            {
+                return BadRequest(new { message = "Username is required." });
+            }
+
+            bool updateResult = await _userManager.UpdateUserStatus(statusUpdate.Username, statusUpdate.NewStatus);
+            if (updateResult)
+            {
+                return Ok(new { message = $"User status for {statusUpdate.Username} updated successfully to {statusUpdate.NewStatus}." });
+            }
+            else
+            {
+                return NotFound(new { message = $"Failed to update status for {statusUpdate.Username}. User not found or status record missing." });
+            }
+        }
+        [HttpGet("getaccounts")]
+        public async Task<ActionResult<List<Account>>> GetAccounts()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("accountapi"));
+
+            response.EnsureSuccessStatusCode();
+
+            var accounts = await response.Content.ReadFromJsonAsync<List<Account>>();
+
+            return Ok(accounts);
         }
 
     }

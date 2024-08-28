@@ -16,4 +16,5 @@ public interface IUserRepository
     Task AddUserRole(UserRole userRole);
     Task AddUserStatus(UserStatus userStatus);
     Task<UserRole> GetUserRole(int userId);
+    Task<UserStatus> GetUserStatus(int userId);
 }

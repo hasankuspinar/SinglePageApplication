@@ -30,6 +30,7 @@
     <ProjectReference Include="..\spaproj.client\spaproj.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\SPAproj.Models\SPAproj.Models.csproj" />
   </ItemGroup>
 
 </Project>

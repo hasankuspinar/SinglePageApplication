@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../auth/auth.service';
+interface Account {
+  accountNumber: string;
+  balance: number;
+}
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
@@ -10,15 +14,17 @@ import { Router } from '@angular/router';
 export class UserPageComponent implements OnInit {
   username: string = '';
   isAdmin: boolean = false;
+  accounts: Account[] = [];
 
-  constructor(private httpClient: HttpClient,private router: Router) { }
+  constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.getUserInfo();
+    this.getAccounts();
   }
 
   getUserInfo(): void {
-    this.httpClient.get < { username: string,role: string }>('https://localhost:7233/api/Auth/userInfo', { withCredentials: true })
+    this.authService.userInfo()
       .subscribe({
         next: (response) => {
           this.username = response.username;
@@ -29,8 +35,19 @@ export class UserPageComponent implements OnInit {
         }
       });
   }
+  getAccounts(): void {
+    this.authService.getAccounts() 
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+        },
+        error: (error) => {
+          console.error('Failed to fetch accounts', error);
+        }
+      });
+  }
   onLogout(): void {
-    this.httpClient.post('https://localhost:7233/api/Auth/logout', {}, { withCredentials: true })
+    this.authService.logout()
       .subscribe({
         next: () => {
           console.log('Logout successful');

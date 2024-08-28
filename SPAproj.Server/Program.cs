@@ -20,21 +20,12 @@ namespace SPAproj.Server
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext")));
 
             // Add services to the container.
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigin",
-                    policyBuilder =>
-                    {
-                        policyBuilder.WithOrigins("https://localhost:4200")
-                               .AllowAnyHeader()
-                               .AllowAnyMethod()
-                               .AllowCredentials();
-                    });
-            });
+            
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserManager>();
-
+            builder.Services.AddHttpClient();
+            builder.Services.AddSingleton<ConfigurationService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             var connectionString = builder.Configuration.GetConnectionString("PersonContext");
@@ -75,9 +66,8 @@ namespace SPAproj.Server
             app.UseCors("AllowSpecificOrigin");
 
             app.UseAuthentication();
+            app.UseMiddleware<UserStatusMiddleware>();
             app.UseAuthorization();
-            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/auth/getData"),
-                appBuilder => appBuilder.UseMiddleware<AdminRoleMiddleware>());
 
             app.MapControllers();
 

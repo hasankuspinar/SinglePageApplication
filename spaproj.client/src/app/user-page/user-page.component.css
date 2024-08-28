@@ -1,3 +1,24 @@
+.user-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+  .table th, .table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  .table th {
+    background-color: #f4f4f4;
+  }
 .user-page a.logout-link,
 .user-page a.admin-link {
   display: inline-block;

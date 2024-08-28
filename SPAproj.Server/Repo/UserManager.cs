@@ -77,12 +77,14 @@ public class UserManager
             return false;
 
         var role = await _userRepository.GetUserRole(user.UserId);
+        var userStatus = await _userRepository.GetUserStatus(user.UserId);
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new Claim(ClaimTypes.Role, role.Role)
+            new Claim(ClaimTypes.Role, role.Role),
+            new Claim("UserStatus", userStatus.Status.ToString())
         };
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -111,6 +113,25 @@ public class UserManager
             return Convert.ToBase64String(hash);
         }
     }
+
+    public async Task<bool> UpdateUserStatus(string username, int newStatus)
+    {
+        var user = await _userRepository.GetUserByUsername(username);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var userStatus = await _context.UserStatus.FirstOrDefaultAsync(us => us.UserId == user.UserId);
+        if (userStatus != null)
+        {
+            userStatus.Status = newStatus;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
 
 
 }

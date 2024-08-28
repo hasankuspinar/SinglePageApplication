@@ -1,0 +1,6 @@
+@SPAproj.AccountService_HostAddress = http://localhost:5107
+
+GET {{SPAproj.AccountService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
