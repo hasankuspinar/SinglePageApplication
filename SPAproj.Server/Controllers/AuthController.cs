@@ -50,7 +50,7 @@ namespace SPAproj.Server.Controllers
 
             if (!success)
             {
-                return Unauthorized("Invalid username or password.");
+                return BadRequest("Invalid username or password.");
             }
 
             
