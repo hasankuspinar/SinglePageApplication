@@ -136,7 +136,7 @@ namespace SPAproj.Server.Controllers
         [HttpGet("getaccounts")]
         public async Task<ActionResult<List<Account>>> GetAccounts()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("account")+"account/getall");
+            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("AccountServiceBaseURL")+"account/getall");
 
             response.EnsureSuccessStatusCode();
 
