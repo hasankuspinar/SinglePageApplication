@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPAproj.Server;
-using SPAproj.Server.Models;
+using SPAproj.Models;
 
 namespace SPAproj.Server.Data
 {

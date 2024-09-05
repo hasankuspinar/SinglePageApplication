@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace SPAproj.Server.Models;
+namespace SPAproj.Models;
 
 public class UserStatus
 {

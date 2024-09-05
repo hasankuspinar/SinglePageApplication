@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.Extensions.DependencyInjection;
 using SPAproj.Server.Data;
-using SPAproj.Server.Models;
+using SPAproj.Models.Service;
+using SPAproj.Models.Data;
 using SPAproj.Server.Repo;
 using System.Configuration;
 
@@ -14,22 +16,22 @@ namespace SPAproj.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<PersonContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext") ?? throw new InvalidOperationException("Connection string 'PersonContext' not found.")));
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("PersonContext")));
+                options.UseMySql(builder.Configuration.GetConnectionString("PersonContext"), new MySqlServerVersion(new Version(8, 0, 21)))
+                );
 
             // Add services to the container.
-            
+
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserManager>();
             builder.Services.AddHttpClient();
             builder.Services.AddSingleton<ConfigurationService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add(new ApiExceptionFilter()); 
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            var connectionString = builder.Configuration.GetConnectionString("PersonContext");
-            builder.Services.AddDbContext<PersonContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

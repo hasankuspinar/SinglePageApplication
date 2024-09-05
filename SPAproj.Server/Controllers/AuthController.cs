@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SPAproj.Server.Repo;
-using SPAproj.Server.Models;
+using SPAproj.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using SPAproj.Models;
 using System.Net.Http;
+using SPAproj.Models.Service;
 
 namespace SPAproj.Server.Controllers
 {
@@ -136,7 +136,7 @@ namespace SPAproj.Server.Controllers
         [HttpGet("getaccounts")]
         public async Task<ActionResult<List<Account>>> GetAccounts()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("accountapi"));
+            HttpResponseMessage response = await _httpClient.GetAsync(_configurationService.GetParameterValue("account")+"account/getall");
 
             response.EnsureSuccessStatusCode();
 

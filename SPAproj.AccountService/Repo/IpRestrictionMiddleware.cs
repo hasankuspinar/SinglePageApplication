@@ -1,15 +1,18 @@
-﻿using System.Net;
+﻿using SPAproj.Models.Service;
+using System.Net;
 namespace SPAproj.AccountService.Repo
 {
     public class IpRestrictionMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<IpRestrictionMiddleware> _logger;
+        private readonly ConfigurationService _configuration;
 
-        public IpRestrictionMiddleware(RequestDelegate next, ILogger<IpRestrictionMiddleware> logger)
+        public IpRestrictionMiddleware(RequestDelegate next, ILogger<IpRestrictionMiddleware> logger, ConfigurationService configuration)
         {
             _next = next;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task Invoke(HttpContext context)
@@ -18,8 +21,10 @@ namespace SPAproj.AccountService.Repo
 
             _logger.LogInformation("Request from Remote IP address: {RemoteIp}", remoteIp);
 
-            
-            if (remoteIp.Equals(IPAddress.Loopback) || remoteIp.Equals(IPAddress.IPv6Loopback))
+
+            var allowedIp = _configuration.GetParameterValue("serverapi");
+
+            if (IPAddress.TryParse(allowedIp, out var allowedIPAddress) && remoteIp.Equals(allowedIPAddress))
             {
                 await _next(context);
             }
