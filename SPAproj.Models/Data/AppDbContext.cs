@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SPAproj.Server.Models;
+using SPAproj.Models;
 
-namespace SPAproj.Server.Data;
+namespace SPAproj.Models.Data;
 
 public class AppDbContext : DbContext
 {

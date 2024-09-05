@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SPAproj.Server.Models;
-using SPAproj.Server.Data;
+using SPAproj.Models;
+using SPAproj.Models.Data;
 
 namespace SPAproj.Server.Repo;
 public class UserRepository : IUserRepository

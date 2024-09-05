@@ -1,4 +1,4 @@
-﻿namespace SPAproj.Server.Models;
+﻿namespace SPAproj.Models;
 
 public class Person
 {

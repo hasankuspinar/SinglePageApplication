@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using SPAproj.Server.Models;
+using SPAproj.Models;
 
 public enum Status
 {

@@ -1,6 +1,7 @@
-﻿using SPAproj.Server.Data;
+﻿using SPAproj.Models.Data;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace SPAproj.Server.Repo
+namespace SPAproj.Models.Service
 {
     public class ConfigurationService
     {
