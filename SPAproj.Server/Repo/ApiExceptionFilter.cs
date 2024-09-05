@@ -7,6 +7,10 @@ namespace SPAproj.Server.Repo
     {
         public void OnException(ExceptionContext context)
         {
+            if (context.Exception is UnauthorizedAccessException)
+            {
+                return;
+            }
             var apiError = new ApiError
             {
                 Message = "An error occurred while processing your request.", 
